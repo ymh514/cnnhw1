@@ -3,7 +3,7 @@ package cnnhw1;
 import java.io.*;
 import java.math.*;
 import java.util.*;
-
+//test
 public class cnnhw1{ //目前這個程式碼主要先測試感知機1
 //	static ArrayList<ArrayList<String>> array_list = new ArrayList<ArrayList<String>>();
 	static ArrayList<float[]> array = new ArrayList<float[]>();
@@ -64,12 +64,12 @@ public class cnnhw1{ //目前這個程式碼主要先測試感知機1
 		int reference=Float.floatToIntBits(array.get(0)[array.get(0).length-1]);
 		for(int i=0;i<array.size();i++){
 			if(array.get(i)[array.get(i).length-1]==reference){
-				array.get(i)[array.get(i).length-1]=-1;
+				array.get(i)[array.get(i).length-1]=1;
 			}
 			else{
-				array.get(i)[array.get(i).length-1]=1;
+				array.get(i)[array.get(i).length-1]=-1;
 			}		
-		}//假裝是對的
+		}//假裝是對的有時候要改 -1 1 記註記住 
 
 		System.out.println("start to do cal");
 		float studyrate = 0.8f;
