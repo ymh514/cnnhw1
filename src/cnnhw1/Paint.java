@@ -15,18 +15,28 @@ public class Paint extends JPanel{
 	private float threshold;
 	private float liney1;
 	private float liney2;
+<<<<<<< HEAD
 	private int framesizex;
 	private int framesizey;
 	private ArrayList<float[]> array_input = new ArrayList<float[]>();
 	
 	public Paint(ArrayList<float[]> array_input,float[] initial,float threshold,float liney1,float liney2,int framesizex,int framesizey){
+=======
+	private ArrayList<float[]> array_input = new ArrayList<float[]>();
+	
+	public Paint(ArrayList<float[]> array_input,float[] initial,float threshold,float liney1,float liney2){
+>>>>>>> origin/master
 		this.array_input=array_input;
 		this.initial=initial;
 		this.threshold=threshold;
 		this.liney1=liney1;
 		this.liney2=liney2;
+<<<<<<< HEAD
 		this.framesizex=framesizex;
 		this.framesizey=framesizey;
+=======
+		
+>>>>>>> origin/master
 	}//need trans to constructor
 	
 
@@ -44,6 +54,7 @@ public class Paint extends JPanel{
 	   
        Graphics2D g2d = (Graphics2D) g;
        g.setColor(green);
+<<<<<<< HEAD
        g2d.setStroke(new BasicStroke(2));//set line width
        g2d.draw(new Line2D.Float(framesizex, 400+(-liney1*16), 0, 400+(-liney2*16)));
        
@@ -51,6 +62,13 @@ public class Paint extends JPanel{
        g2d.setStroke(new BasicStroke(1));
 	   g.drawLine(framesizex/2,0,framesizex/2,framesizey);
 	   g.drawLine(0, framesizey/2, framesizex, framesizey/2);
+=======
+       g2d.draw(new Line2D.Float(800, 400+(-liney1*16), 0, 400+(-liney2*16)));
+
+       g.setColor(black);
+	   g.drawLine(400,0,400,800);
+	   g.drawLine(0, 400, 800, 400);
+>>>>>>> origin/master
 	   //set ratio at 16x
 	   for(int i =0;i<array_input.size();i++){
 		   if(array_input.get(i)[2]==-1){
