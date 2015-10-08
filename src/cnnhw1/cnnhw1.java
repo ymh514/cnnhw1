@@ -6,122 +6,133 @@ import java.util.*;
 import java.awt.*;
 import javax.swing.*;
 
-public class cnnhw1{ //¥Ø«e³o­Óµ{¦¡½X¥D­n¥ı´ú¸Õ·Pª¾¾÷1
+public class cnnhw1 extends JFrame{ //ç›®å‰é€™å€‹ç¨‹å¼ç¢¼ä¸»è¦å…ˆæ¸¬è©¦æ„ŸçŸ¥æ©Ÿ1
 
-	static ArrayList<float[]> array = new ArrayList<float[]>();
-	static Scanner input = new Scanner(System.in);
+	static ArrayList<float[]> array_input = new ArrayList<float[]>();
+//	static Scanner input = new Scanner(System.in);
 	
-	/*	1.generate gui first 
-	 *  2.load file & use split then trans to float wiz token2,then store into array
-	 * 	3.do calculate 
-	 * 
+	private static float eastxbound=400.0f;
+	private static float westxbound=-400.0f;
+	private static int framesizex=800;
+	private static int framesizey=800;
+	
+	private static  float equation(float w0,float w1,float threshold,float x){
+		float y;
+		y=(threshold/w1)-(w0/w1)*(x/16);
+		return y;
+	}
+	private static ArrayList<float[]> class_defination(ArrayList<float[]> array_input){
+		
+		int reference=(int) array_input.get(0)[array_input.get(0).length-1];
+		for(int i=0;i<array_input.size();i++){
+			if(array_input.get(i)[array_input.get(i).length-1]==reference){
+				array_input.get(i)[array_input.get(i).length-1]=1;			}
+			else{
+				array_input.get(i)[array_input.get(i).length-1]=-1;		
+			}		
+		}//å‡è£æ˜¯å°çš„æœ‰æ™‚å€™è¦æ”¹ -1 1 è¨˜è¨»è¨˜ä½ 	
+		return array_input;
+	}
+	/*	 
+	 *  1.load file & use split then trans to float wiz token2,then store into array
+	 *  2.class defination
+	 *  3.get initial information
+	 * 	4.do calculate & set some flag 
+	 *  5.genarate line equation
+	 *  6.generate gui 
 	 */
 	public static void main(String[] args) throws IOException{
-	/*
-	 * 1.generate gui first
+
+		/*
+	 * 1.load file & use split then trans to float wiz token2,then store into array
 	 */
-		JFrame frame = new JFrame();
-
-
-		frame.setVisible(true);//just set visible
-		frame.setSize(800, 800);//set the frame size
-		frame.setLocation(100, 100);//set the frame show location
-		//
-		// maybe the code below need put at the end cause everything we need to calculate first 
-		// then put in the paint class to paint 
-
-		//
-		//
-		//
-	/*
-	 * 2.load file & use split then trans to float wiz token2,then store into array
-	 */
-		String Filename = "E:\\1041\\cnn\\HW1\\1.txt";
+		String Filename = "/Users/Terry/Documents/workspace/neutral network/dataset/2Hcircle1.txt";
 		FileReader fr = new FileReader(Filename); 
-		BufferedReader br = new BufferedReader(fr);//¦bbr.ready¤Ï¬d¿é¤J¦ê¬yªºª¬ªp¬O§_¦³¸ê®Æ
+		BufferedReader br = new BufferedReader(fr);//åœ¨br.readyåæŸ¥è¼¸å…¥ä¸²æµçš„ç‹€æ³æ˜¯å¦æœ‰è³‡æ–™
 
 		String txt;
 		while((txt=br.readLine())!=null){
-			String[] token = txt.split("\t");
-			float[] token2 = new float[token.length];//«Å§ifloat[]
+			
+			/* If there is space before split(), it will cause the error
+			 * So, we could to use trim() to remove the space at the beginning and the end.
+			 * Then split the result, which doesn't include the space at the beginning and the end.
+			 * "\\s+" would match any of space, as you don't have to consider the number of space in the string
+			 */
+			String[] token = txt.trim().split("\\s+");//<-----èƒŒèµ·ä¾†
+			//String[] token = txt.split(" ");//<-----original split
+			
+			float[] token2 = new float[token.length];//å®£å‘Šfloat[]
 
 			try{
 				for(int i=0;i<token.length;i++){
 					token2[i] = Float.parseFloat(token[i]);	
-				}//§âtoken(string)Âà­¼token2(float)
-				array.add(token2);//§âtxt¸Ì­±¤º®e¥ı¤Á³Î¹L¦b³£Åª¶iarray¤º 
+				}//æŠŠtoken(string)è½‰ä¹˜token2(float)
+				array_input.add(token2);//æŠŠtxtè£¡é¢å…§å®¹å…ˆåˆ‡å‰²éåœ¨éƒ½è®€é€²arrayå…§ 
 			}catch(NumberFormatException ex){
 				System.out.println("Sorry Error...");
 			}
 		}
-		fr.close();//Ãö³¬ÀÉ®×
-		
+		fr.close();//é—œé–‰æª”æ¡ˆ
+/*		
 		for(int i=0;i<array.size();i++){
 			for(int j=0;j<array.get(i).length;j++){
 			System.out.print(array.get(i)[j] + "\t");
 			}
 			System.out.println();
-		}//§âarraylist ¤ºªº¤º®e³£¦L¥X¨Ó
-
-	/* 3.do calculate 
-	 * ¥ı¥Î¤@­Ó°ò·Ç­È ¦pªG>=1 ¨º´Nª½±µ¥Î¥L³]¬°1 ¨ä¥L¤£¦P³]¬°-1
-	 * ¦P²z ¦pªG¤@¶}©l®³¨ì0or-1 
+		}//æŠŠarraylist å…§çš„å…§å®¹éƒ½å°å‡ºä¾†
+*/
+	/* 2.class defination 
+	 * å…ˆç”¨ä¸€å€‹åŸºæº–å€¼ å¦‚æœ>=1 é‚£å°±ç›´æ¥ç”¨ä»–è¨­ç‚º1 å…¶ä»–ä¸åŒè¨­ç‚º-1
+	 * åŒç† å¦‚æœä¸€é–‹å§‹æ‹¿åˆ°0or-1 
 	 */
-		int reference=Float.floatToIntBits(array.get(0)[array.get(0).length-1]);
-		for(int i=0;i<array.size();i++){
-			if(array.get(i)[array.get(i).length-1]==reference){
-				array.get(i)[array.get(i).length-1]=1;
-			}
-			else{
-				array.get(i)[array.get(i).length-1]=-1;
-			}		
-		}//°²¸Ë¬O¹ïªº¦³®É­Ô­n§ï -1 1 °Oµù°O¦í 
-	/*
-	 * 	try sent value to paint to see how happen.
-	 */
+		class_defination(array_input);
 		
-		Paint trypaint = new Paint(array);
-		frame.add(trypaint);//add paint(class) things in to the frame 		
+	/*
+	 * 3.get initial information. maybe will change to top in the future. 
+	 * å…ˆæ”¾åœ¨é€™è£¡
+	 */		
+		// Erstellung Array vom Datentyp Object, HinzufÃ¼gen der Komponenten		
+		JTextField usrlooptimes = new JTextField();
+		JTextField usrstudyrate = new JTextField();
+		JTextField usrthreshold = new JTextField();
+        Object[] message = {"Looptimes (eg.50)", usrlooptimes,"Studyrate (eg.0.8)", usrstudyrate,"Threshold (eg.-1.0)",usrthreshold};
+
+        JOptionPane pane = new JOptionPane( message,JOptionPane.PLAIN_MESSAGE,JOptionPane.OK_CANCEL_OPTION);
+        pane.createDialog(null, "Initial Parameter").setVisible(true);		
 	/*
 	 * calculate initial value setting
 	 */
-
-		System.out.println("Please enter loop times: (eg.50)");//¿é¤J­¡¥N¦¸¼Æ­­¨î
-		int looptimes = input.nextInt();
+		int looptimes = Integer.parseInt(usrlooptimes.getText());
 		System.out.println("Your loop times is "+ looptimes);
 		
-		System.out.println("Please enter threshold: (eg.-1.0)");
-		float threshold= input.nextFloat();
-		System.out.println("Your threshold is "+ threshold);
-		
-		System.out.println("Please enter studyrate: (eg.0.8)");
-		float studyrate= input.nextFloat();
+		float studyrate= Float.parseFloat(usrstudyrate.getText());
 		System.out.println("Your studyrate is "+ studyrate);
 		
+		float threshold= Float.parseFloat(usrthreshold.getText());
+		System.out.println("Your threshold is "+ threshold);
 		System.out.println("-----start to do calculate-----");
-		
-		/*
-		 * ªì­È«Å§i»P¤@¨Ç§PÂ_¾÷¨î
-		 */
-		
+	
+	/*
+	 * 	4.do calculate & set some flag
+	 */
 		float[] initial={0f,1.0f};
 		int x0=-1;
 		float sum=0f;
 		float caltemp=0f;
 		int judge=0;
 		int xn=0;
-		int dataamount = array.size();
+		int dataamount = array_input.size();
 		int correctcount=0;
 		int correctflag = 0;
 		
 		whileloop:
 			while(looptimes!=0){
 				
-				for(int w=0;w<(array.get(xn).length-1);w++){//­n¥Îªº¥u¦³«e¨â­Ó ³Ì«á¤@­Ó¬Odesire
-					sum += (initial[w]) * (array.get(xn)[w]);//°µ¹Bºâ®É§âarray¤ºªºÂ¾¥ıÂà­¼float
+				for(int w=0;w<(array_input.get(xn).length-1);w++){//è¦ç”¨çš„åªæœ‰å‰å…©å€‹ æœ€å¾Œä¸€å€‹æ˜¯desire
+					sum += (initial[w]) * (array_input.get(xn)[w]);//åšé‹ç®—æ™‚æŠŠarrayå…§çš„è·å…ˆè½‰ä¹˜float
 				}
 				caltemp=x0*threshold;
-				sum += caltemp;	//»Ö­È¸òx0¬Û­¼³Ì«á¦A°µ
+				sum += caltemp;	//é–¥å€¼è·Ÿx0ç›¸ä¹˜æœ€å¾Œå†åš
 				if(sum>=0){
 					judge=1;//sum result > 0
 				}
@@ -129,16 +140,16 @@ public class cnnhw1{ //¥Ø«e³o­Óµ{¦¡½X¥D­n¥ı´ú¸Õ·Pª¾¾÷1
 					judge=-1;//sum result <0
 				}
 		
-				if (judge!=array.get(xn)[array.get(xn).length-1]&&judge>=0){
-					for(int w=0;w<(array.get(xn).length-1);w++){//­n¥Îªº¥u¦³«e¨â­Ó ³Ì«á¤@­Ó¬Odesire
-						initial[w] -= studyrate*array.get(xn)[w];
+				if (judge!=array_input.get(xn)[array_input.get(xn).length-1]&&judge>=0){
+					for(int w=0;w<(array_input.get(xn).length-1);w++){//è¦ç”¨çš„åªæœ‰å‰å…©å€‹ æœ€å¾Œä¸€å€‹æ˜¯desire
+						initial[w] -= studyrate*array_input.get(xn)[w];
 					}
 					threshold -= studyrate*x0;			
 					correctcount=0;
 				}
-				else if(judge!=array.get(xn)[array.get(xn).length-1]&&judge<0){
-					for(int w=0;w<(array.get(0).length-1);w++){//­n¥Îªº¥u¦³«e¨â­Ó ³Ì«á¤@­Ó¬Odesire
-						initial[w] += studyrate*array.get(xn)[w];	
+				else if(judge!=array_input.get(xn)[array_input.get(xn).length-1]&&judge<0){
+					for(int w=0;w<(array_input.get(0).length-1);w++){//è¦ç”¨çš„åªæœ‰å‰å…©å€‹ æœ€å¾Œä¸€å€‹æ˜¯desire
+						initial[w] += studyrate*array_input.get(xn)[w];	
 					}
 					threshold += studyrate*x0;
 					correctcount=0;
@@ -155,14 +166,14 @@ public class cnnhw1{ //¥Ø«e³o­Óµ{¦¡½X¥D­n¥ı´ú¸Õ·Pª¾¾÷1
 				if(correctcount==dataamount-1){
 					correctflag=1;
 					break whileloop;
-				}//·íÁÍªñ©ó¦¬ÀÄ®Éµ¹¤@­Ócorrectflag = 1  Åı«á­±break¤§«áªº¦L¥i¥H¦L¥¿½Tªº¸ê°T
+				}//ç•¶è¶¨è¿‘æ–¼æ”¶æ–‚æ™‚çµ¦ä¸€å€‹correctflag = 1  è®“å¾Œé¢breakä¹‹å¾Œçš„å°å¯ä»¥å°æ­£ç¢ºçš„è³‡è¨Š
 							
 				if (xn==dataamount-1){
 					xn = 0;
 				}
 				else{
 					xn++;
-				}//xn Âk¹s­«ÀY¶}©lºâ
+				}//xn æ­¸é›¶é‡é ­é–‹å§‹ç®—
 				looptimes--;//looptimes countdown
 			}
 		
@@ -172,5 +183,22 @@ public class cnnhw1{ //¥Ø«e³o­Óµ{¦¡½X¥D­n¥ı´ú¸Õ·Pª¾¾÷1
 		else{
 			System.out.println("Sorry, out of looptimes");
 		}
-	}
+		
+		float liney1=equation(initial[0],initial[1],threshold,eastxbound);
+		float liney2=equation(initial[0],initial[1],threshold,westxbound);
+		
+	/*
+	 * 5.generate gui
+	 */		
+		JFrame frame = new JFrame();
+
+		frame.setVisible(true);//just set visible
+		frame.setSize(framesizex, framesizey);//set the frame size
+		frame.setLocation(100,100);//set the frame show location
+		frame.setResizable(false);
+
+		Paint trypaint = new Paint(array_input,initial,threshold,liney1,liney2,framesizex,framesizey);
+		frame.add(trypaint);//add paint(class) things in to the frame
+	}	
+
 }
