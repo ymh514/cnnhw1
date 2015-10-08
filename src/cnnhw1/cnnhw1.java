@@ -9,26 +9,18 @@ import javax.swing.*;
 public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知機1
 
 	static ArrayList<float[]> array_input = new ArrayList<float[]>();
-<<<<<<< HEAD
 //	static Scanner input = new Scanner(System.in);
 	
 	private static float eastxbound=400.0f;
 	private static float westxbound=-400.0f;
 	private static int framesizex=800;
 	private static int framesizey=800;
-=======
-	static Scanner input = new Scanner(System.in);
-	
-	private static float eastxbound=400.0f;
-	private static float westxbound=-400.0f;
->>>>>>> origin/master
 	
 	private static  float equation(float w0,float w1,float threshold,float x){
 		float y;
 		y=(threshold/w1)-(w0/w1)*(x/16);
 		return y;
 	}
-<<<<<<< HEAD
 	private static ArrayList<float[]> class_defination(ArrayList<float[]> array_input){
 		
 		int reference=(int) array_input.get(0)[array_input.get(0).length-1];
@@ -41,8 +33,6 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 		}//假裝是對的有時候要改 -1 1 記註記住 	
 		return array_input;
 	}
-=======
->>>>>>> origin/master
 	/*	 
 	 *  1.load file & use split then trans to float wiz token2,then store into array
 	 *  2.class defination
@@ -56,11 +46,7 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 		/*
 	 * 1.load file & use split then trans to float wiz token2,then store into array
 	 */
-<<<<<<< HEAD
 		String Filename = "/Users/Terry/Documents/workspace/neutral network/dataset/2Hcircle1.txt";
-=======
-		String Filename = "E:\\1041\\cnn\\HW1\\dataset\\2CS.txt";
->>>>>>> origin/master
 		FileReader fr = new FileReader(Filename); 
 		BufferedReader br = new BufferedReader(fr);//在br.ready反查輸入串流的狀況是否有資料
 
@@ -99,20 +85,8 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 	 * 先用一個基準值 如果>=1 那就直接用他設為1 其他不同設為-1
 	 * 同理 如果一開始拿到0or-1 
 	 */
-<<<<<<< HEAD
 		class_defination(array_input);
 		
-=======
-		int reference=(int) array_input.get(0)[array_input.get(0).length-1];
-		for(int i=0;i<array_input.size();i++){
-			if(array_input.get(i)[array_input.get(i).length-1]==reference){
-				array_input.get(i)[array_input.get(i).length-1]=1;			}
-			else{
-				array_input.get(i)[array_input.get(i).length-1]=-1;		
-			}		
-		}//假裝是對的有時候要改 -1 1 記註記住 
-
->>>>>>> origin/master
 	/*
 	 * 3.get initial information. maybe will change to top in the future. 
 	 * 先放在這裡
@@ -219,19 +193,11 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 		JFrame frame = new JFrame();
 
 		frame.setVisible(true);//just set visible
-<<<<<<< HEAD
 		frame.setSize(framesizex, framesizey);//set the frame size
 		frame.setLocation(100,100);//set the frame show location
 		frame.setResizable(false);
 
 		Paint trypaint = new Paint(array_input,initial,threshold,liney1,liney2,framesizex,framesizey);
-=======
-		frame.setSize(800, 800);//set the frame size
-		frame.setLocation(100,100);//set the frame show location
-		frame.setResizable(false);
-
-		Paint trypaint = new Paint(array_input,initial,threshold,liney1,liney2);
->>>>>>> origin/master
 		frame.add(trypaint);//add paint(class) things in to the frame
 	}	
 
