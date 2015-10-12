@@ -58,10 +58,10 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 		frame.add(trypaint);//add paint(class) things in to the frame		
 	}
 
-	private static void printarraylist(ArrayList<float[]> array_input,ArrayList<float[]> array_temp,ArrayList<float[]> array_train,ArrayList<float[]> array_test){
-		for(int i=0;i<array_input.size();i++){
-			for(int j=0;j<array_input.get(i).length;j++){
-			System.out.print(array_input.get(i)[j] + "\t");
+	private static void printarraylist(ArrayList<float[]> array){
+		for(int i=0;i<array.size();i++){
+			for(int j=0;j<array.get(i).length;j++){
+			System.out.print(array.get(i)[j] + "\t");
 			}
 			System.out.println();
 		}//把arraylist 內的內容都印出來
@@ -81,13 +81,15 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 		while(arrayinputamount!=0){
 			int n=rand.nextInt(arrayinputamount)+0;
 			array_temp.add(array_input.get(n));
+			array_input.remove(n);// del input to prevent get same data
 			arrayinputamount--;
 		}
+		
 	}
 	
 	private static void separateTemp(ArrayList<float[]> array_temp){
 		int totalamount=array_temp.size();
-		int tocalamount=(totalamount*2)/3;
+		int tocalamount=Math.round((float)(totalamount*2)/3);
 		int totestamount=totalamount-tocalamount;
 
 		while(tocalamount!=0){
@@ -95,11 +97,13 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 			array_temp.remove(0);
 			tocalamount--;
 		}
+		System.out.println("train amount : "+array_train.size());
 		while(totestamount!=0){
 			array_test.add(array_temp.get(0));
 			array_temp.remove(0);
 			totestamount--;
-		}	
+		}
+		System.out.println("test amount : "+array_test.size());	
 	}
 	
 	private static void printCorrectRatio(float[] initial,float threshold,ArrayList<float[]> array_test){
@@ -168,11 +172,10 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 	 *  8.generate gui 
 	 */
 	public static void main(String[] args) throws IOException{
-	
 	/*
 	 * 1.load file & use split then trans to float wiz token2,then store into array
 	 */
-		String Filename = "E:\\1041\\cnn\\HW1\\dataset\\2Circle2.txt";
+		String Filename = "E:\\1041\\cnn\\HW1\\dataset\\感知機1.txt";
 		FileReader fr = new FileReader(Filename); 
 		BufferedReader br = new BufferedReader(fr);//在br.ready反查輸入串流的狀況是否有資料
 
@@ -200,19 +203,19 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 		}
 		fr.close();//關閉檔案
 		
-//		printarraylist(array_input);//print out all in arraylist
 
 	/* 2.class defination 
 	 * 先用一個基準值 如果>=1 那就直接用他設為1 其他不同設為-1
 	 * 同理 如果一開始拿到0or-1 
 	 */
 		classify(array_input);//call function to classify
-		
+
+
 	/*
 	 * 3.copy array_input to array_temp with random, then separate 2/3 as train dataset 1/3 as test set
 	 */
 		putInputToTemp(array_input);// copy to temp with random
-		
+
 		separateTemp(array_temp);//separate to train and test set,set 2/3 as train set 1/3 as test set
 
 
@@ -253,7 +256,7 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 		int dataamount = array_train.size();
 		int correctcount=0;
 		int correctflag = 0;
-		
+		int atleastrunaround=dataamount;
 		whileloop:
 			while(looptimes!=0){
 				float sum=0f;//db2 sum is a register and you have to reset to zero.
@@ -281,7 +284,7 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 				
 //				printthresholdandinitial(threshold,initial);
 				
-				if(correctcount==dataamount-1){
+				if(correctcount==dataamount-1 && atleastrunaround==0){
 					correctflag=1;
 					break whileloop;
 				}//當趨近於收斂時給一個correctflag = 1  讓後面break之後的印可以印正確的資訊
@@ -293,9 +296,10 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 					xn++;
 				}//xn 歸零重頭開始算
 				looptimes--;//looptimes countdown
+				if(atleastrunaround!=0){
+					atleastrunaround--;
+				}
 			}
-
-		
 		flagdecide(correctflag);//call function to decide
 		
 
@@ -309,8 +313,6 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 	 * 7.check correct ratio(call function in printCorrctRatio) then print correctratio
 	 */
 		printCorrectRatio(initial,threshold,array_test);
-
-
 	/*
 	 * 8.generate gui
 	 */		

@@ -17,10 +17,10 @@ public class Paint extends JPanel{
 	private float liney2;
 	private int framesizex;
 	private int framesizey;
-	private ArrayList<float[]> array_input = new ArrayList<float[]>();
+	private ArrayList<float[]> array_train = new ArrayList<float[]>();
 	
-	public Paint(ArrayList<float[]> array_input,float[] initial,float threshold,float liney1,float liney2,int framesizex,int framesizey){
-		this.array_input=array_input;
+	public Paint(ArrayList<float[]> array_train,float[] initial,float threshold,float liney1,float liney2,int framesizex,int framesizey){
+		this.array_train=array_train;
 		this.initial=initial;
 		this.threshold=threshold;
 		this.liney1=liney1;
@@ -54,14 +54,14 @@ public class Paint extends JPanel{
 	   g.drawLine(framesizex/2,0,framesizex/2,framesizey);
 	   g.drawLine(0, framesizey/2, framesizex, framesizey/2);
 	   //set ratio at 16x
-	   for(int i =0;i<array_input.size();i++){
-		   if(array_input.get(i)[2]==-1){
+	   for(int i =0;i<array_train.size();i++){
+		   if(array_train.get(i)[2]==-1){
 			   g.setColor(red);   
-			   g.fillOval((Math.round(399+(array_input.get(i)[0])*16)),Math.round((399+(-array_input.get(i)[1])*16)), 2, 2);
+			   g.fillOval((Math.round(398+(array_train.get(i)[0])*16)),Math.round((398+(-array_train.get(i)[1])*16)), 4, 4);
 		   }//use math round get round
-		   else if(array_input.get(i)[2]==1){
+		   else if(array_train.get(i)[2]==1){
 			   g.setColor(blue);   
-			   g.fillOval((Math.round(399+(array_input.get(i)[0])*16)),Math.round((399+(-array_input.get(i)[1])*16)), 2, 2);   
+			   g.fillOval((Math.round(398+(array_train.get(i)[0])*16)),Math.round((398+(-array_train.get(i)[1])*16)), 4, 4);   
 		   }//use math round get round
 	   }
 
