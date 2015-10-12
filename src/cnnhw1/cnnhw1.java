@@ -9,6 +9,8 @@ import javax.swing.*;
 public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知機1
 
 	static ArrayList<float[]> array_input = new ArrayList<float[]>();
+//	static ArrayList<float[]> array_calculate = new ArrayList<float[]>();
+	
 //	static Scanner input = new Scanner(System.in);
 	
 	private static float eastxbound=400.0f;
@@ -96,11 +98,10 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 	 *  6.generate gui 
 	 */
 	public static void main(String[] args) throws IOException{
-
 		/*
 	 * 1.load file & use split then trans to float wiz token2,then store into array
 	 */
-		String Filename = "E:\\1041\\cnn\\HW1\\dataset\\2CS.txt";
+		String Filename = "E:\\1041\\cnn\\HW1\\dataset\\2Hcircle1.txt";
 		FileReader fr = new FileReader(Filename); 
 		BufferedReader br = new BufferedReader(fr);//在br.ready反查輸入串流的狀況是否有資料
 
@@ -165,11 +166,11 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 	/*
 	 * 	4.do calculate & set some flag
 	 */
-		float[] initial={0f,1.0f};
+		float[] initial={1.0f,-1.0f};
 		int x0=-1;
-		float sum=0f;
+
 		float caltemp=0f;
-		int judge=0;
+		float judge=0f;
 		int xn=0;
 		int dataamount = array_input.size();
 		int correctcount=0;
@@ -177,35 +178,35 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 		
 		whileloop:
 			while(looptimes!=0){
+				float sum=0f;//db2 sum is a register and you have to reset to zero.
+				sum  =sumall(array_input,initial,caltemp,threshold,sum,x0,xn);//call function to sum all things
 				
-				sum=sumall(array_input,initial,caltemp,threshold,sum,x0,xn);//call function to sum all things
-				
-				if(sum>=0){
-					judge=1;//sum result > 0
-				}
-				else{
-					judge=-1;//sum result <0
-				}
+				judge = Math.signum(sum);//use math's sign function return value
 		
 				if (judge!=array_input.get(xn)[array_input.get(xn).length-1]&&judge>=0){
 					for(int w=0;w<(array_input.get(xn).length-1);w++){//要用的只有前兩個 最後一個是desire
 						initial[w] -= studyrate*array_input.get(xn)[w];
+						
+//						array_input.get(xn)[w]=initial[w];
 					}
 					threshold -= studyrate*x0;			
 					correctcount=0;
+					System.out.printf("---more 0 : (%f,%f)---\n", initial[0],initial[1]);
 				}
 				else if(judge!=array_input.get(xn)[array_input.get(xn).length-1]&&judge<0){
 					for(int w=0;w<(array_input.get(0).length-1);w++){//要用的只有前兩個 最後一個是desire
-						initial[w] += studyrate*array_input.get(xn)[w];	
+						initial[w] += studyrate*array_input.get(xn)[w];
+//						array_input.get(xn)[w]=initial[w];
 					}
+					System.out.printf("---small 0 : (%f,%f)---\n", initial[0],initial[1]);
 					threshold += studyrate*x0;
 					correctcount=0;
 				}
 				else{
 					correctcount++;
 				}
-
-//				printthresholdandinitial(threshold,initial);
+				
+				printthresholdandinitial(threshold,initial);
 				
 				if(correctcount==dataamount-1){
 					correctflag=1;
@@ -220,6 +221,9 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 				}//xn 歸零重頭開始算
 				looptimes--;//looptimes countdown
 			}
+		System.out.println("************"+dataamount);
+		System.out.println("++++++++++++"+correctcount);
+		
 		
 		flagdecide(correctflag);//call function to decide 
 		

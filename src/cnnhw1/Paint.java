@@ -49,7 +49,6 @@ public class Paint extends JPanel{
        g.setColor(green);
        g2d.setStroke(new BasicStroke(2));//set line width
        g2d.draw(new Line2D.Float(800, 400+(-liney1*16), 0, 400+(-liney2*16)));
-       
        g.setColor(black);
        g2d.setStroke(new BasicStroke(1));
 	   g.drawLine(framesizex/2,0,framesizex/2,framesizey);
@@ -58,12 +57,12 @@ public class Paint extends JPanel{
 	   for(int i =0;i<array_input.size();i++){
 		   if(array_input.get(i)[2]==-1){
 			   g.setColor(red);   
-			   g.fillOval((int)(398+(array_input.get(i)[0])*16),(int)(398+(-array_input.get(i)[1])*16), 4, 4);
-		   }
+			   g.fillOval((Math.round(399+(array_input.get(i)[0])*16)),Math.round((399+(-array_input.get(i)[1])*16)), 2, 2);
+		   }//use math round get round
 		   else if(array_input.get(i)[2]==1){
 			   g.setColor(blue);   
-			   g.fillOval((int)(398+(array_input.get(i)[0])*16),(int)(398+(-array_input.get(i)[1])*16), 4, 4);   
-		   }
+			   g.fillOval((Math.round(399+(array_input.get(i)[0])*16)),Math.round((399+(-array_input.get(i)[1])*16)), 2, 2);   
+		   }//use math round get round
 	   }
 
 
