@@ -114,6 +114,28 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 		System.out.println("Test correct ratio is : "+((float)testcorrect/(float)testamount)*100+"%");	
 	}
 	
+	private static String LoadFile(){
+		/*
+		 * referance java tutorial how to read file then return the path
+		 */
+		JFileChooser fc = new JFileChooser();
+		File NamePath = null;
+		int Checker;
+		
+//		fc.setCurrentDirectory(new java.io.File("E:\\"));
+		fc.setDialogTitle("Choose a file input");
+		Checker = fc.showOpenDialog(null);
+		
+		if(Checker == JFileChooser.APPROVE_OPTION){
+			NamePath = fc.getSelectedFile();
+			System.out.println("The name of path : "+NamePath.getAbsolutePath());
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "You have clicked Canceled");
+		}
+		return NamePath.getAbsolutePath();
+	}
+	
 	private static float sumall(ArrayList<float[]> array,float[] initial,float caltemp,float threshold,float sum,int x0,int xn){
 		for(int w=0;w<(array.get(xn).length-1);w++){//要用的只有前兩個 最後一個是desire
 			sum += (initial[w]) * (array.get(xn)[w]);//做運算時把array內的職先轉乘float
@@ -175,7 +197,10 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 	/*
 	 * 1.load file & use split then trans to float wiz token2,then store into array
 	 */
-		String Filename = "E:\\1041\\cnn\\HW1\\dataset\\感知機1.txt";
+
+		
+		String Filename = LoadFile();
+		
 		FileReader fr = new FileReader(Filename); 
 		BufferedReader br = new BufferedReader(fr);//在br.ready反查輸入串流的狀況是否有資料
 
@@ -261,7 +286,7 @@ public class cnnhw1 extends JFrame{ //目前這個程式碼主要先測試感知
 			while(looptimes!=0){
 				float sum=0f;//db2 sum is a register and you have to reset to zero.
 				sum  =sumall(array_train,initial,caltemp,threshold,sum,x0,xn);//call function to sum all things
-				
+//				System.out.print("\n("+initial[0]+" "+initial[1]+")");
 				judge = Math.signum(sum);//use math's sign function return value
 		
 				if (judge!=array_train.get(xn)[array_train.get(xn).length-1]&&judge>=0){
