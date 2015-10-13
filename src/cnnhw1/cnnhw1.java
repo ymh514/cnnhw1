@@ -108,14 +108,22 @@ public class cnnhw1 extends JFrame { // 目前這個程式碼主要先測試感�
 		System.out.println("test amount : " + array_test.size());
 	}
 
-	private static void printCorrectRatio(float[] initial, float threshold, ArrayList<float[]> array_test) {
+	private static void printCorrectRatio(float[] initial, float threshold, ArrayList<float[]> array_test,
+			ArrayList<float[]> array_train) {
 		int testcorrect = testCheck(initial, threshold, array_test);// call
 																	// function(testCheck)
 																	// to get
-																	// correct
+		int traincorrect = testCheck(initial, threshold, array_train); // correct
+
 		int testamount = array_test.size();
-		System.out.println("test amount is :" + testamount);
-		System.out.println("right palce amount is :" + testcorrect);
+		int trainamount = array_train.size();
+
+		// System.out.println("test amount is :" + testamount);
+		// System.out.println("right palce amount is :" + testcorrect);
+		System.out.println("Train correct ratio is : " + ((float) traincorrect / (float) trainamount) * 100 + "%");
+
+		// System.out.println("test amount is :" + testamount);
+		// System.out.println("right palce amount is :" + testcorrect);
 		System.out.println("Test correct ratio is : " + ((float) testcorrect / (float) testamount) * 100 + "%");
 	}
 
@@ -280,7 +288,7 @@ public class cnnhw1 extends JFrame { // 目前這個程式碼主要先測試感�
 		int dataamount = array_train.size();
 		int correctcount = 0;
 		int correctflag = 0;
-		int highCorrectCount = 0;
+
 		whileloop: while (looptimes != 0) {
 			float sum = 0f;// db2 sum is a register and you have to reset to
 							// zero.
@@ -299,7 +307,7 @@ public class cnnhw1 extends JFrame { // 目前這個程式碼主要先測試感�
 					initial[w] -= studyrate * array_train.get(xn)[w];
 				}
 				threshold -= studyrate * x0;
-				highCorrectCount = correctcount;				
+
 				correctcount = 0;
 			} else if (judge != array_train.get(xn)[array_train.get(xn).length - 1] && judge < 0) {
 				for (int w = 0; w < (array_train.get(0).length - 1); w++) {// 要用的只有前兩個
@@ -307,17 +315,13 @@ public class cnnhw1 extends JFrame { // 目前這個程式碼主要先測試感�
 					initial[w] += studyrate * array_train.get(xn)[w];
 				}
 				threshold += studyrate * x0;
-				highCorrectCount = correctcount;				
 				correctcount = 0;
 			} else {
-				highCorrectCount = correctcount;				
 				correctcount++;
 			}
 
 			// printthresholdandinitial(threshold,initial);
 
-
-			
 			if (correctcount == dataamount - 1) {
 				correctflag = 1;
 				break whileloop;
@@ -331,7 +335,6 @@ public class cnnhw1 extends JFrame { // 目前這個程式碼主要先測試感�
 			looptimes--;// looptimes countdown
 		}
 
-		System.out.println("Train correct ratio is : " + ((float) highCorrectCount / (float) dataamount) * 100 + "%");
 		flagdecide(correctflag);// call function to decide
 
 		/*
@@ -342,9 +345,9 @@ public class cnnhw1 extends JFrame { // 目前這個程式碼主要先測試感�
 
 		/*
 		 * 7.check correct ratio(call function in printCorrctRatio) then print
-		 * correctratio
+		 * correctratio(both train and test)
 		 */
-		printCorrectRatio(initial, threshold, array_test);
+		printCorrectRatio(initial, threshold, array_test, array_train);
 		/*
 		 * 8.generate gui
 		 */
